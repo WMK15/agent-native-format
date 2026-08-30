@@ -1,0 +1,24 @@
+{
+  "name": "agent-native-format",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "tsx --test src/**/*.test.ts",
+    "validate:fixtures": "tsx src/cli.ts validate:fixtures",
+    "benchmark:v0": "tsx src/cli.ts benchmark:v0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.8.0"
+  },
+  "dependencies": {
+    "@toon-format/toon": "4.1.1",
+    "yaml": "^2.9.0"
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "project": {
+    "id": "anf-core",
+    "name": "Agent Native Format",
+    "repository": "WMK15/agent-native-format",
+    "status": "research",
+    "primaryLanguage": "TypeScript",
+    "createdAt": "2026-08-31T09:00:00Z"
+  },
+  "files": [
+    { "id": "file-runner", "path": "src/runner.ts", "kind": "source", "ownerId": "person-priya", "status": "planned", "dependsOn": ["file-schema"] },
+    { "id": "file-schema", "path": "src/schema.ts", "kind": "source", "ownerId": "person-priya", "status": "planned", "dependsOn": [] },
+    { "id": "file-results", "path": "src/results.ts", "kind": "source", "ownerId": "person-mateo", "status": "planned", "dependsOn": ["file-schema"] },
+    { "id": "file-v0-plan", "path": "benchmarks/v0/README.md", "kind": "documentation", "ownerId": "person-noor", "status": "active", "dependsOn": [] },
+    { "id": "file-fixture", "path": "benchmarks/v0/datasets/agent-context.canonical.json", "kind": "dataset", "ownerId": "person-noor", "status": "active", "dependsOn": [] }
+  ],
+  "dependencies": [
+    { "id": "dep-zod", "name": "zod", "version": "^3.24.0", "purpose": "validate benchmark records", "runtime": "node" },
+    { "id": "dep-yaml", "name": "yaml", "version": "^2.6.0", "purpose": "parse YAML fixtures", "runtime": "node" },
+    { "id": "dep-toon", "name": "@toon-format/toon", "version": "4.1.1", "purpose": "encode and decode TOON fixtures", "runtime": "node" }
+  ],
+  "decisions": [
+    { "id": "dec-measure-first", "title": "Measure before proposing syntax", "status": "accepted", "date": "2026-08-31", "rationale": "A smaller prompt is not useful if task quality falls." },
+    { "id": "dec-static-fixtures", "title": "Keep v0 fixtures static", "status": "accepted", "date": "2026-08-31", "rationale": "Stable inputs make cross-format comparisons reproducible." },
+    { "id": "dec-no-format-winner", "title": "Do not declare a format winner in v0", "status": "accepted", "date": "2026-08-31", "rationale": "Results must include quality and cost per successful task." }
+  ],
+  "people": [
+    { "id": "person-priya", "name": "Priya Shah", "role": "benchmark engineer", "responsibilities": ["runner", "schema"] },
+    { "id": "person-mateo", "name": "Mateo Ruiz", "role": "evaluation engineer", "responsibilities": ["results", "grading"] },
+    { "id": "person-noor", "name": "Noor Chen", "role": "research lead", "responsibilities": ["fixtures", "protocol"] }
+  ],
+  "constraints": [
+    { "id": "con-node", "rule": "Use Node.js 20 or later", "severity": "required" },
+    { "id": "con-ts", "rule": "Keep implementation TypeScript-oriented", "severity": "required" },
+    { "id": "con-no-network", "rule": "Benchmark runs must not require network access", "severity": "required" },
+    { "id": "con-push", "rule": "Do not push changes without explicit user approval", "severity": "required" }
+  ],
+  "issues": [
+    { "id": "issue-17", "title": "Define token counter adapter", "status": "open", "priority": "high", "assigneeId": "person-priya", "createdAt": "2026-08-31T10:15:00Z", "relatedFileIds": ["file-runner"] },
+    { "id": "issue-18", "title": "Add deterministic task grader", "status": "open", "priority": "high", "assigneeId": "person-mateo", "createdAt": "2026-08-31T10:30:00Z", "relatedFileIds": ["file-results"] },
+    { "id": "issue-19", "title": "Record fixture provenance", "status": "closed", "priority": "medium", "assigneeId": "person-noor", "createdAt": "2026-08-31T10:45:00Z", "relatedFileIds": ["file-fixture"] }
+  ],
+  "milestones": [
+    { "id": "ms-fixtures", "title": "Fixture parity", "dueDate": "2026-09-03", "status": "active" },
+    { "id": "ms-first-run", "title": "First controlled run", "dueDate": "2026-09-10", "status": "planned" }
+  ]
+}

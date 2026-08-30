@@ -1,0 +1,67 @@
+{
+  "suiteId": "agent-context-v0",
+  "fixtureId": "anf-core",
+  "answerProtocol": "Return only the requested JSON value; preserve array order unless the task says otherwise.",
+  "tasks": [
+    {
+      "id": "lookup-project-language",
+      "kind": "lookup",
+      "prompt": "What is the project's primaryLanguage?",
+      "grading": { "type": "exact", "expected": "TypeScript" }
+    },
+    {
+      "id": "filter-open-high-issues",
+      "kind": "filter",
+      "prompt": "Return the IDs of issues that are both open and high priority.",
+      "grading": { "type": "set", "expected": ["issue-17", "issue-18"] }
+    },
+    {
+      "id": "cross-reference-owner",
+      "kind": "cross-reference",
+      "prompt": "Who owns src/results.ts? Return the person's full name.",
+      "grading": { "type": "exact", "expected": "Mateo Ruiz" }
+    },
+    {
+      "id": "dependency-chain",
+      "kind": "cross-reference",
+      "prompt": "Return the direct dependency path of src/runner.ts as file paths, starting with the requested file.",
+      "grading": { "type": "exact", "expected": ["src/runner.ts", "src/schema.ts"] }
+    },
+    {
+      "id": "required-constraints",
+      "kind": "constraints",
+      "prompt": "Return the IDs of all required constraints that prohibit a benchmark run from depending on an external service or unapproved external action.",
+      "grading": { "type": "set", "expected": ["con-no-network", "con-push"] }
+    },
+    {
+      "id": "decision-rationale",
+      "kind": "lookup",
+      "prompt": "State why Benchmark v0 must not declare a format winner.",
+      "grading": { "type": "rubric", "mustInclude": ["quality", "cost per successful task"], "caseInsensitive": true }
+    },
+    {
+      "id": "repeated-retrieval-assignee",
+      "kind": "repeated-retrieval",
+      "sequenceId": "issue-17-owner",
+      "turn": 1,
+      "readPhase": "cold",
+      "prompt": "Return the assignee ID for issue-17.",
+      "grading": { "type": "exact", "expected": "person-priya" }
+    },
+    {
+      "id": "repeated-retrieval-person",
+      "kind": "repeated-retrieval",
+      "sequenceId": "issue-17-owner",
+      "turn": 2,
+      "readPhase": "repeat",
+      "prompt": "Using the same context, return the responsibilities of issue-17's assignee as an ordered array.",
+      "grading": { "type": "exact", "expected": ["runner", "schema"] }
+    },
+    {
+      "id": "selective-retrieval-closed",
+      "kind": "selective-retrieval",
+      "prompt": "Return the related file path for the closed issue only.",
+      "grading": { "type": "exact", "expected": "benchmarks/v0/datasets/agent-context.canonical.json" }
+    }
+  ]
+}

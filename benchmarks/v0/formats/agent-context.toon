@@ -1,0 +1,89 @@
+project:
+  id: anf-core
+  name: Agent Native Format
+  repository: WMK15/agent-native-format
+  status: research
+  primaryLanguage: TypeScript
+  createdAt: "2026-08-31T09:00:00Z"
+files[5]:
+  - id: file-runner
+    path: src/runner.ts
+    kind: source
+    ownerId: person-priya
+    status: planned
+    dependsOn[1]: file-schema
+  - id: file-schema
+    path: src/schema.ts
+    kind: source
+    ownerId: person-priya
+    status: planned
+    dependsOn: []
+  - id: file-results
+    path: src/results.ts
+    kind: source
+    ownerId: person-mateo
+    status: planned
+    dependsOn[1]: file-schema
+  - id: file-v0-plan
+    path: benchmarks/v0/README.md
+    kind: documentation
+    ownerId: person-noor
+    status: active
+    dependsOn: []
+  - id: file-fixture
+    path: benchmarks/v0/datasets/agent-context.canonical.json
+    kind: dataset
+    ownerId: person-noor
+    status: active
+    dependsOn: []
+dependencies[3]{id,name,version,purpose,runtime}:
+  dep-zod,zod,^3.24.0,validate benchmark records,node
+  dep-yaml,yaml,^2.6.0,parse YAML fixtures,node
+  dep-toon,@toon-format/toon,4.1.1,encode and decode TOON fixtures,node
+decisions[3]{id,title,status,date,rationale}:
+  dec-measure-first,Measure before proposing syntax,accepted,2026-08-31,A smaller prompt is not useful if task quality falls.
+  dec-static-fixtures,Keep v0 fixtures static,accepted,2026-08-31,Stable inputs make cross-format comparisons reproducible.
+  dec-no-format-winner,Do not declare a format winner in v0,accepted,2026-08-31,Results must include quality and cost per successful task.
+people[3]:
+  - id: person-priya
+    name: Priya Shah
+    role: benchmark engineer
+    responsibilities[2]: runner,schema
+  - id: person-mateo
+    name: Mateo Ruiz
+    role: evaluation engineer
+    responsibilities[2]: results,grading
+  - id: person-noor
+    name: Noor Chen
+    role: research lead
+    responsibilities[2]: fixtures,protocol
+constraints[4]{id,rule,severity}:
+  con-node,Use Node.js 20 or later,required
+  con-ts,Keep implementation TypeScript-oriented,required
+  con-no-network,Benchmark runs must not require network access,required
+  con-push,Do not push changes without explicit user approval,required
+issues[3]:
+  - id: issue-17
+    title: Define token counter adapter
+    status: open
+    priority: high
+    assigneeId: person-priya
+    createdAt: "2026-08-31T10:15:00Z"
+    relatedFileIds[1]: file-runner
+  - id: issue-18
+    title: Add deterministic task grader
+    status: open
+    priority: high
+    assigneeId: person-mateo
+    createdAt: "2026-08-31T10:30:00Z"
+    relatedFileIds[1]: file-results
+  - id: issue-19
+    title: Record fixture provenance
+    status: closed
+    priority: medium
+    assigneeId: person-noor
+    createdAt: "2026-08-31T10:45:00Z"
+    relatedFileIds[1]: file-fixture
+milestones[2]{id,title,dueDate,status}:
+  ms-fixtures,Fixture parity,2026-09-03,active
+  ms-first-run,First controlled run,2026-09-10,planned
