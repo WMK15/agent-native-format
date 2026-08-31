@@ -1,133 +1,107 @@
-<h1 align="center">Agent-Native Format</h1>
+# Agent-Native Format
 
-<p align="center">
-  <strong>Measure first. Design second.</strong><br>
-  An evidence-first investigation into how structured context should be represented for AI agents.
-</p>
+This is a personal research project about whether AI agents could use a better way of storing and reading context.
 
-<p align="center">
-  <img alt="Status: Benchmark v0" src="https://img.shields.io/badge/status-Benchmark%20v0-D4A72C">
-  <a href="https://www.typescriptlang.org/"><img alt="TypeScript strict" src="https://img.shields.io/badge/TypeScript-strict-3178C6?logo=typescript&logoColor=white"></a>
-  <a href="https://nodejs.org/"><img alt="Node.js 20 or later" src="https://img.shields.io/badge/Node.js-%E2%89%A520-339933?logo=node.js&logoColor=white"></a>
-  <img alt="TOON 4.1.1" src="https://img.shields.io/badge/TOON-4.1.1-6F42C1">
-  <img alt="Personal research" src="https://img.shields.io/badge/project-personal%20research-0969DA">
-  <img alt="Contributions closed" src="https://img.shields.io/badge/contributions-closed-6E7781">
-</p>
+It is public because I want the work and results to be visible. It is not open for contributions.
 
-<p align="center">
-  <a href="#the-research-question">Research question</a> ·
-  <a href="#benchmark-v0">Benchmark v0</a> ·
-  <a href="#metrics">Metrics</a> ·
-  <a href="#quick-start">Quick start</a> ·
-  <a href="#repository-policy">Repository policy</a>
-</p>
+## Where This Came From
 
-Agent-Native Format asks whether a representation designed for machine-consumed working context can make agents faster and cheaper without making them less correct. The project starts with controlled measurement across existing formats—not with a new file extension or a hand-designed syntax.
+I had a pretty simple idea: what if there was a file type specifically for AI agents? Something formatted in a way that they could read quicker, process with less waste, and hopefully use fewer credits.
 
-<a id="project-status"></a>
+At first I was thinking mainly about a new file extension. The more I thought about it, the more I realised the interesting part is not the extension or whether the syntax looks cool. It is the way the information is structured and how much work an agent has to do to use it.
 
-## Status
+There are already formats like TOON that try to represent structured data with fewer tokens. That is useful, but I want to look at a slightly wider problem. Agents do not only read neat tables of data. They read repository instructions, architecture docs, file maps, previous decisions, task state, dependencies, constraints, tool output, and loads of other context.
 
-The project is in its **Benchmark v0** phase. The measurement contract, semantically equivalent baseline fixtures, realistic task suite, offline dry-run harness, and evidence-gated specification workspace are in place.
+The bigger win might not be making a file 30% smaller. It might be letting an agent avoid reading 90% of it because the information is indexed, split into useful blocks, cacheable, or selectively loaded.
 
-No format winner has been declared. The current deterministic mock verifies the benchmark machinery; it does not constitute model-performance evidence.
+So this might eventually become a file format. It might become a compiled context container with a small runtime around it. It might just produce a set of findings about which structures work better. I do not know yet, which is why I am testing it before trying to design the final thing.
 
-## The Research Question
+## What I Am Actually Trying to Work Out
 
-> Can a data format designed for AI-agent context reduce tokens, latency, and cost without reducing task correctness or selective-retrieval performance?
+> Given the exact same information, can I represent it in a way that lets an AI agent reach the right answer faster and with fewer tokens and less cost, without making it less accurate or reliable?
 
-Agents repeatedly consume repository maps, decisions, dependencies, constraints, issues, tool results, and working memory. Human-friendly formats are not automatically model-efficient. Compact formats can save tokens while introducing ambiguity, hiding relationships, or increasing retrieval failures.
+I do not care if the answer ends up being Markdown, minified JSON, TOON, some graph-like format, a binary container, or something completely different. I also do not want to invent strange syntax just because it looks compact to a human.
 
-The useful unit of comparison is therefore not serialized size alone. It is the **cost of obtaining a correct result** under realistic access patterns.
+The models should decide through the results.
 
-## What This Project Is
+## Why I Am Benchmarking It First
 
-- A reproducible benchmark for semantically equivalent agent-context representations.
-- A test bed for exact lookup, filtering, cross-reference reasoning, constraint checking, and repeated selective retrieval.
-- A lightweight TypeScript harness with a pluggable provider boundary and an explicit token-count fallback.
-- A place to turn repeated empirical findings into design criteria.
-- A public research record for a privately directed project.
+It would be easy to make up a format, give it a short extension, and say it is "built for AI." That does not prove anything.
 
-## What This Project Is Not
+A format can use fewer tokens and still be worse if the model misunderstands it, misses relationships, produces longer answers, or has to reread the same context several times. The metric I care about most is eventually **cost per successful task**, because that forces token savings and correctness into the same result.
 
-- Not a new file format—yet.
-- Not a claim that one representation is universally best.
-- Not a token-count leaderboard that ignores correctness.
-- Not a benchmark where different formats receive different facts or special prompts.
-- Not an open-source community project or a request for external contributions.
+Benchmark v0 compares the same agent-style context in:
 
-## Benchmark v0
+- Markdown
+- JSON
+- YAML
+- minified JSON
+- TOON 4.1.1
 
-Benchmark v0 holds the facts, prompts, scoring, model configuration, and repetitions constant while changing only the context representation.
+The current fixture contains project metadata, files, dependencies, decisions, people, constraints, issues, and milestones. Each version is meant to contain the same facts. JSON, YAML, minified JSON, and TOON are parsed and checked against the canonical fixture. The Markdown version is checked for value coverage and manually reviewed.
 
-| Baseline | Representation | Role in v0 |
-| --- | --- | --- |
-| Markdown | Human-oriented tables and prose | Readability baseline |
-| JSON | Pretty-printed structured data | Ubiquitous structured baseline |
-| YAML | Indentation-oriented structured data | Human-editable structured baseline |
-| Minified JSON | Whitespace-free JSON | Simple compression baseline |
-| TOON 4.1.1 | Version-pinned reference encoding | Token-oriented structured baseline |
-| Experimental formats | Added later through the same registry | Evidence-seeking candidates only |
+The tasks cover:
 
-Every representation contains the same project metadata, files, dependencies, decisions, people and roles, constraints, issues, milestones, identifiers, and timestamps. JSON, minified JSON, YAML, and TOON are parser-checked against the canonical fixture. The human-authored Markdown fixture is checked for primitive-value coverage and parity-reviewed.
+- looking up an exact value;
+- filtering several records;
+- following references between records;
+- checking constraints;
+- returning to the same context for another question;
+- finding a small relevant part inside a larger context.
 
-The initial suite contains nine machine-gradable tasks across five task families:
+The full setup is in [Benchmark v0](benchmarks/v0/README.md) and the rules for running comparisons are in the [benchmark protocol](benchmarks/v0/protocol.md).
 
-1. Exact lookup.
-2. Multi-record filtering.
-3. Cross-reference reasoning.
-4. Constraint checking.
-5. Repeated and selective retrieval.
+## What I Am Measuring
 
-See the [Benchmark v0 guide](benchmarks/v0/README.md), [protocol](benchmarks/v0/protocol.md), and [format provenance](benchmarks/v0/formats/README.md).
-
-## Metrics
-
-Accuracy is primary. Resource savings are interpreted only after task quality is known.
-
-| Metric | What it answers |
+| Metric | Why I care about it |
 | --- | --- |
-| Input tokens | How much context-window capacity and input spend does the format consume? |
-| Task success / accuracy | Does the representation preserve the information needed to answer correctly? |
-| Output tokens | Does the format change response overhead? |
-| Latency | How long does the complete task take? |
-| Repeated-read efficiency | What happens when an agent returns to the same semantic context? |
-| Selective-retrieval efficiency | How efficiently can the agent isolate a small relevant subset? |
-| Cost per successful task | What is the economic cost after unsuccessful attempts are included? |
+| Input tokens | How much context has to be sent to the model |
+| Accuracy | Whether the agent actually got the task right |
+| Output tokens | Whether the representation changes how much the model has to produce |
+| Latency | How long the task takes from request to response |
+| Repeated-read efficiency | What happens when the agent needs the same context again |
+| Selective retrieval | Whether the agent can find a small useful part without wasting work on everything else |
+| Cost per successful task | What the correct result really cost after failures are included |
 
-Raw observations remain separate from derived summaries. Every run records a manifest, fixture and representation hashes, task and format identifiers, provider/model labels, random seed, repetitions, token-measurement source, pricing inputs, raw responses, scorer decisions, and timing.
+Token count on its own is not a win. If something is half the size but noticeably less reliable, that trade-off needs to be shown rather than hidden.
 
-## Research Principles
+## I Am Also Using This to Learn
 
-- **Semantic equivalence first.** A smaller encoding is not comparable if it drops facts.
-- **Correctness before compression.** Token savings matter only when the task still succeeds.
-- **Raw evidence before claims.** Every summary must be traceable to individual trials.
-- **Explicit uncertainty.** Approximate tokens, rubric scores, and timing boundaries are labeled.
-- **Version everything.** Formats, datasets, tasks, models, tokenizers, prompts, and prices drift.
-- **No benchmark-shaped syntax.** A candidate must generalize beyond one fixture.
-- **Specification follows evidence.** `spec/` contains design criteria, not an invented grammar.
+This project is also an excuse for me to properly learn the more technical side of **large language models (LLMs)** and the systems built around them.
 
-## Repository Structure
+An LLM is the model itself. An AI agent is usually a larger system built around a model with prompts, tools, memory, retrieval, files, and some kind of loop for taking actions. This project touches both, but they are not the same thing.
 
-```text
-benchmarks/
-  v0/
-    datasets/       Canonical structured source of truth
-    formats/        Equivalent Markdown, JSON, YAML, minified JSON, and TOON
-    tasks/          Machine-gradable agent-context tasks
-    README.md       Benchmark scope and task families
-    protocol.md     Controlled trial and reporting contract
-experiments/        Hypothesis template and future experiment records
-research/           Research question, metric definitions, and validity analysis
-spec/               Evidence-backed design criteria; intentionally no syntax
-src/                TypeScript runner, scoring, validation, metrics, and CLI
-```
+The parts I want to understand better include:
 
-Generated artifacts are written to `benchmarks/v0/results/` and ignored by Git. A run produces append-only JSONL observations, a reproducibility manifest, a JSON summary, and a per-format CSV summary.
+- how text is split into tokens and why different structures use different numbers of them;
+- how context windows work and what happens when they get crowded;
+- how models find relationships inside long or messy context;
+- how prompt caching changes repeated-read cost;
+- how retrieval, indexing, and chunking decide what the model sees;
+- why a smaller representation can sometimes hurt comprehension;
+- how to benchmark model behaviour without accidentally designing the test around the answer I want;
+- how model usage, latency, token counts, and API pricing fit together in a real agent workflow.
 
-## Quick Start
+I have used AI tools a lot, but I do not want my understanding to stop at prompts and API calls. Building this is a way for me to get closer to what is actually happening underneath the agent layer while making something concrete at the same time.
 
-Requires Node.js 20 or later.
+## Current State
+
+Benchmark v0 is bootstrapped. The repository currently has:
+
+- one canonical agent-context dataset;
+- five equivalent representations;
+- nine machine-graded tasks;
+- fixture validation;
+- exact, set, and rubric scoring;
+- seeded format ordering and repeated runs;
+- raw JSONL results plus a manifest, JSON summary, and CSV summary;
+- calculations for accuracy, token use, latency, repeated reads, selective retrieval, and cost per success.
+
+The current provider is an offline deterministic mock. It checks that the benchmark machinery works, but it is **not** evidence that any format performs better with a real model. Real model runs come later.
+
+## Run It
+
+You need Node.js 20 or newer.
 
 ```bash
 npm install
@@ -137,55 +111,30 @@ npm run validate:fixtures
 npm run benchmark:v0 -- --dry-run
 ```
 
-The dry run uses an offline deterministic provider and requires no API key. It validates fixture parity, task loading, randomized condition ordering, structured-answer scoring, metric derivation, and result generation without making a network request.
+The dry run does not need an API key and does not make a network request. Generated results go into `benchmarks/v0/results/` and are ignored by Git.
 
-### Commands
+## Repository Layout
 
-| Command | Purpose |
-| --- | --- |
-| `npm run typecheck` | Check the strict TypeScript project |
-| `npm test` | Run scoring, ordering, metric, and fixture tests |
-| `npm run validate:fixtures` | Confirm all baseline representations match the canonical context |
-| `npm run benchmark:v0 -- --dry-run` | Execute the complete offline Benchmark v0 pipeline |
-
-Optional environment variables configure deterministic repetitions, ordering, output location, model label, and pricing inputs:
-
-```bash
-BENCHMARK_REPETITIONS=5 \
-BENCHMARK_SEED=20260831 \
-BENCHMARK_MODEL=model-snapshot-name \
-BENCHMARK_INPUT_USD_PER_MILLION=0 \
-BENCHMARK_OUTPUT_USD_PER_MILLION=0 \
-npm run benchmark:v0 -- --dry-run
+```text
+benchmarks/   The datasets, format versions, tasks, and Benchmark v0 protocol
+experiments/  A template and, later, the actual experiments
+research/     The question, metrics, and things that could make the results misleading
+spec/         Requirements supported by evidence; there is no format spec yet
+src/          The TypeScript benchmark runner, validation, scoring, and summaries
 ```
 
-## Research Workflow
+## Where This Could Go
 
-1. Register a falsifiable hypothesis using `experiments/TEMPLATE.md`.
-2. Pin the dataset, task set, encoder, model, tokenizer, prompt, and price assumptions.
-3. Run every candidate through the same randomized format × task × model × repetition matrix.
-4. Preserve raw results and compute the required metrics by format and designated retrieval cohort.
-5. Analyze representative failures, uncertainty, and threats to validity.
-6. Promote a finding into `spec/` only when repeated evidence supports it.
+One possible end result is a format with an index, addressable blocks, stable sections for caching, mutable task state, and explicit relationships between pieces of context. A human could keep writing normal docs while a compiler turns them into something an agent can load more selectively.
 
-## Roadmap
+Another possible result is that no new format is needed and a careful mix of existing formats works best for different types of information. That would still be a useful answer.
 
-1. **Benchmark v0** — measurement contract, fixture parity, task suite, and dry-run harness.
-2. **Provider adapters** — real model usage, tokenizer reporting, and dated price snapshots.
-3. **Corpus expansion** — held-out fixtures, context-size tiers, and additional agent workloads.
-4. **Baseline runs** — repeated comparisons across pinned model families.
-5. **Property experiments** — isolate the effects of keys, nesting, repetition, references, and ordering.
-6. **Format proposal** — only if the accumulated evidence justifies a new syntax.
+I would rather find out that the original idea is wrong than force the benchmark to justify it.
 
-## Repository Policy
+## Contributions
 
-This repository is public for transparency and reference, but it is a **personal research project and is not open to external contributions**.
-
-- Pull requests are not being accepted.
-- The issue tracker is not a support or feature-request channel.
-- The research direction, experiments, and implementation are maintained privately by the repository owner.
-- Public visibility should not be interpreted as an invitation to contribute or as a grant of rights beyond those provided by an explicit license.
+This is public personal research, not a community project. I am not accepting pull requests, feature requests, or outside contributions. The repository is public so the process and results can be read, not because I am looking for maintainers.
 
 ## License
 
-No license has been granted. Until an explicit license is added, normal copyright restrictions apply.
+There is currently no license. Normal copyright restrictions apply unless I add one later.
