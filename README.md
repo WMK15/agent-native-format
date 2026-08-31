@@ -4,7 +4,7 @@ This is a personal research project about whether AI agents could use a better w
 
 It is public because I want the work and results to be visible. It is not open for contributions.
 
-## Where This Came From
+## Where this came from
 
 I had a pretty simple idea: what if there was a file type specifically for AI agents? Something formatted in a way that they could read quicker, process with less waste, and hopefully use fewer credits.
 
@@ -16,7 +16,7 @@ The bigger win might not be making a file 30% smaller. It might be letting an ag
 
 So this might eventually become a file format. It might become a compiled context container with a small runtime around it. It might just produce a set of findings about which structures work better. I do not know yet, which is why I am testing it before trying to design the final thing.
 
-## What I Am Actually Trying to Work Out
+## What I am actually trying to work out
 
 > Given the exact same information, can I represent it in a way that lets an AI agent reach the right answer faster and with fewer tokens and less cost, without making it less accurate or reliable?
 
@@ -24,7 +24,7 @@ I do not care if the answer ends up being Markdown, minified JSON, TOON, some gr
 
 The models should decide through the results.
 
-## Why I Am Benchmarking It First
+## Why I am benchmarking it first
 
 It would be easy to make up a format, give it a short extension, and say it is "built for AI." That does not prove anything.
 
@@ -51,7 +51,7 @@ The tasks cover:
 
 The full setup is in [Benchmark v0](benchmarks/v0/README.md) and the rules for running comparisons are in the [benchmark protocol](benchmarks/v0/protocol.md).
 
-## What I Am Measuring
+## What I am measuring
 
 | Metric | Why I care about it |
 | --- | --- |
@@ -65,7 +65,7 @@ The full setup is in [Benchmark v0](benchmarks/v0/README.md) and the rules for r
 
 Token count on its own is not a win. If something is half the size but noticeably less reliable, that trade-off needs to be shown rather than hidden.
 
-## I Am Also Using This to Learn
+## I am also using this to learn
 
 This project is also an excuse for me to properly learn the more technical side of **large language models (LLMs)** and the systems built around them.
 
@@ -113,7 +113,7 @@ npm run benchmark:v0 -- --dry-run
 
 The dry run does not need an API key and does not make a network request. Generated results go into `benchmarks/v0/results/` and are ignored by Git.
 
-## Repository Layout
+## Repository layout
 
 ```text
 benchmarks/   The datasets, format versions, tasks, and Benchmark v0 protocol
@@ -123,7 +123,7 @@ spec/         Requirements supported by evidence; there is no format spec yet
 src/          The TypeScript benchmark runner, validation, scoring, and summaries
 ```
 
-## Where This Could Go
+## Where this could go
 
 One possible end result is a format with an index, addressable blocks, stable sections for caching, mutable task state, and explicit relationships between pieces of context. A human could keep writing normal docs while a compiler turns them into something an agent can load more selectively.
 
